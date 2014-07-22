@@ -47,6 +47,9 @@ class Provider(BaseProvider):
 
         print result
 
+    def pull_posts(self):
+        return None
+
     def get_post_thumbnail(self, post):
         return post.data.get('images', {}).get('thumbnail')
 

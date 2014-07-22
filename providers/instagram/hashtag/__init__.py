@@ -8,11 +8,11 @@ from socialfeed.providers import BaseProvider
 
 class Provider(BaseProvider):
     @classmethod
-    def label(cls):
+    def get_label(cls):
         return _('instagram (hashtag)')
 
-    @property
-    def config_fields(self):
+    @classmethod
+    def get_config_fields(cls):
         return ['hashtag', 'app_id', 'app_secret',
                 'app_callback_url']
 
@@ -46,3 +46,9 @@ class Provider(BaseProvider):
             id=self.subscription.subscription_id)
 
         print result
+
+    def get_post_thumbnail(self, post):
+        return post.data.get('images', {}).get('thumbnail')
+
+    def get_post_title(self, post):
+        return post.data.get('caption', '')

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from . import models
 from . import forms
@@ -31,7 +32,23 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['admin_thumbnail', 'admin_title', 'provider']
+
+    def provider(self, instance):
+        return instance.subscription.provider
+
+    def admin_thumbnail(self, instance):
+        provider = instance.subscription.get_provider()
+        url = provider.get_post_thumbnail(instance)
+        if url:
+            return mark_safe(
+                u'<img src="{}" width="75" alt="" />'.format(url))
+        else:
+            return None
+
+    def admin_title(self, instance):
+        title = instance.subscription.get_provider().get_post_title(instance)
+        return title
 
 
 admin.site.register(models.Subscription, SubscriptionAdmin)

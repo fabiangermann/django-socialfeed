@@ -32,8 +32,8 @@ class SubscriptionAdminForm(forms.ModelForm):
                 if not field == 'provider':
                     self.fields.pop(field)
         else:
-            provider = self.instance.get_provider()
-            for idx, config_var_name in enumerate(provider.config_fields):
+            config_fields = self.instance.provider_class.get_config_fields()
+            for idx, config_var_name in enumerate(config_fields):
                 field = self.fields['config_var_{}'.format(idx)]
                 field.label = config_var_name.replace('_', ' ')
                 field.required = True

@@ -10,7 +10,7 @@ from jsonfield import JSONField
 PROVIDER_CHOICES = []
 for provider_module in getattr(settings, 'SOCIALFEED_PROVIDERS'):
     module = import_module(provider_module)
-    PROVIDER_CHOICES.append((provider_module, module.Provider.label()))
+    PROVIDER_CHOICES.append((provider_module, module.Provider.get_label()))
 
 
 class Subscription(models.Model):
@@ -27,9 +27,13 @@ class Subscription(models.Model):
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
 
-    def get_provider(self):
+    @property
+    def provider_class(self):
         module = import_module(self.provider)
-        return module.Provider(self)
+        return module.Provider
+
+    def get_provider(self):
+        return self.provider_class(self)
 
 
 def subscribe(sender, instance, **kwargs):

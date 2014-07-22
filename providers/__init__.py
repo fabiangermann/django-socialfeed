@@ -1,10 +1,10 @@
 class BaseProvider(object):
     @classmethod
-    def label(cls):
+    def get_label(cls):
         raise NotImplementedError
 
-    @property
-    def config_fields(self):
+    @classmethod
+    def get_config_fields(self):
         raise NotImplementedError
 
     def __init__(self, subscription, *args, **kwargs):
@@ -18,4 +18,10 @@ class BaseProvider(object):
         raise NotImplementedError
 
     def pull_posts(self):
+        raise NotImplementedError
+
+    def get_post_thumbnail(self, post):
+        raise NotImplementedError
+
+    def get_post_title(self, post):
         raise NotImplementedError

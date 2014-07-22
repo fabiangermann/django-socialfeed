@@ -1,10 +1,11 @@
 import urllib
 from urlparse import parse_qs
 
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, FormView
 from django.views.generic.detail import SingleObjectMixin
-from django.core.urlresolvers import reverse
 
 from socialfeed.models import Subscription
 from facepy import GraphAPI
@@ -19,7 +20,8 @@ class RequestAccessTokenView(FormView):
     def form_valid(self, form):
         subscription = form.cleaned_data['subscription']
         app_id = subscription.config['app_id']
-        redirect_uri = 'http://kluk.ch:8000{}'.format(
+        redirect_uri = 'http://{}{}'.format(
+            Site.objects.get_current().domain,
             reverse('facebook_authorize_access_token', kwargs={
                 'pk': subscription.pk
             }))
@@ -27,7 +29,7 @@ class RequestAccessTokenView(FormView):
         params = urllib.urlencode({
             'client_id': app_id,
             'redirect_uri': redirect_uri,
-            'scope': 'read_stream'
+            'scope': 'read_stream,user_photos'
         })
         url = 'http://www.facebook.com/dialog/oauth?{}'.format(params)
 
@@ -42,7 +44,8 @@ class AuthorizeAccessTokenView(SingleObjectMixin, View):
 
         subscription = self.get_object()
 
-        redirect_uri = 'http://kluk.ch:8000{}'.format(
+        redirect_uri = 'http://{}{}'.format(
+            Site.objects.get_current().domain
             reverse('facebook_authorize_access_token', kwargs={
                 'pk': subscription.pk
             }))
@@ -62,3 +65,13 @@ class AuthorizeAccessTokenView(SingleObjectMixin, View):
         subscription.save()
 
         return HttpResponse('worked')
+
+
+class FacebookPushView(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(request.GET.get('hub.challenge'))
+
+    def post(self, request, *args, **kwargs):
+        print '---'
+        print request.body
+        print '==='

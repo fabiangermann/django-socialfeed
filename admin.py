@@ -23,7 +23,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
                 if field[:10] == 'config_var':
                     fieldsets[0][1]['fields'].remove(field)
 
-            config_var_names = obj.get_provider().config_fields
+            config_var_names = obj.get_provider().get_config_fields()
             config_fields = ['config_var_{}'.format(idx) for idx
                              in range(0, len(config_var_names))]
             fieldsets.append(('config', {'fields': config_fields}))

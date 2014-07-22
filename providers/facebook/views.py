@@ -45,7 +45,7 @@ class AuthorizeAccessTokenView(SingleObjectMixin, View):
         subscription = self.get_object()
 
         redirect_uri = 'http://{}{}'.format(
-            Site.objects.get_current().domain
+            Site.objects.get_current().domain,
             reverse('facebook_authorize_access_token', kwargs={
                 'pk': subscription.pk
             }))

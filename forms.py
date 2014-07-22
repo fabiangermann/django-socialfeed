@@ -35,13 +35,12 @@ class SubscriptionAdminForm(forms.ModelForm):
             provider = self.instance.get_provider()
             for idx, config_var_name in enumerate(provider.config_fields):
                 field = self.fields['config_var_{}'.format(idx)]
-                field.label = config_var_name
+                field.label = config_var_name.replace('_', ' ')
                 field.required = True
                 field.initial = self.instance.config.get(config_var_name)
 
     def clean(self):
         super(SubscriptionAdminForm, self).clean()
-
         if self.instance.pk:
             provider = self.instance.get_provider()
             for idx, config_var_name in enumerate(provider.config_fields):

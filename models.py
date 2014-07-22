@@ -27,6 +27,9 @@ class Subscription(models.Model):
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
 
+    def __unicode__(self):
+        return self.provider
+
     @property
     def provider_class(self):
         module = import_module(self.provider)

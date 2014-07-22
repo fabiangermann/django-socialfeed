@@ -2,7 +2,7 @@ from importlib import import_module
 
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, pre_delete
 from django.utils.translation import ugettext_lazy as _
 
 from jsonfield import JSONField
@@ -17,6 +17,10 @@ class Subscription(models.Model):
     is_active = models.BooleanField(_('is active'), default=False)
     provider = models.CharField(
         _('provider'), max_length=100, choices=PROVIDER_CHOICES)
+    subscription_id = models.CharField(
+        _('subscription id'), max_length=100,
+        help_text=_('provider related identifier of subscription'),
+        blank=True, null=True)
     config = JSONField('config', blank=True)
 
     class Meta:
@@ -29,15 +33,18 @@ class Subscription(models.Model):
 
 
 def subscribe(sender, instance, **kwargs):
-    provider = instance.get_provider()
-    provider.subscribe()
+    if instance.is_active and not 'subscription_id' in instance.config:
+        provider = instance.get_provider()
+        provider.subscribe()
 
 
 def unsubscribe(sender, instance, **kwargs):
-    print type(sender), kwargs
+    if not instance.is_active and 'subscription_id' in instance.config:
+        provider = instance.get_provider()
+        provider.unsubscribe()
 
 post_save.connect(subscribe, sender=Subscription)
-post_delete.connect(unsubscribe, sender=Subscription)
+pre_delete.connect(unsubscribe, sender=Subscription)
 
 
 class Post(models.Model):

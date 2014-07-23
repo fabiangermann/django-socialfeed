@@ -7,6 +7,7 @@ from . import forms
 
 class SubscriptionAdmin(admin.ModelAdmin):
     form = forms.SubscriptionAdminForm
+    list_display = ['title', 'provider', 'is_active']
     readonly_fields = ['config']
 
     def get_fields(self, request, obj=None):

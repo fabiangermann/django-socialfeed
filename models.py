@@ -15,6 +15,7 @@ for provider_module in getattr(settings, 'SOCIALFEED_PROVIDERS'):
 
 class Subscription(models.Model):
     is_active = models.BooleanField(_('is active'), default=False)
+    title = models.CharField(_('title'), max_length=100)
     provider = models.CharField(
         _('provider'), max_length=100, choices=PROVIDER_CHOICES)
     subscription_id = models.CharField(
@@ -28,7 +29,7 @@ class Subscription(models.Model):
         verbose_name_plural = _('subscriptions')
 
     def __unicode__(self):
-        return self.provider
+        return self.title
 
     @property
     def provider_class(self):

@@ -8,7 +8,7 @@ from socialfeed.models import Subscription
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         subscriptions = Subscription.objects.filter(
-            provider__in=['socialfeed.providers.facebook'])
+            provider__in=['socialfeed.providers.facebook_userfeed'])
 
         for subscription in subscriptions:
             if not all(key in subscription.config for key in ['app_id',

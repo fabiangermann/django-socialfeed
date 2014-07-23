@@ -7,7 +7,7 @@ from ...models import Subscription
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         subscriptions = Subscription.objects.filter(provider__in=[
-            'socialfeed.providers.instagram.hashtag'
+            'socialfeed.providers.instagram_hashtag'
         ])
 
         processed_apps = []

@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,8 +14,7 @@ class Provider(BaseProvider):
 
     @classmethod
     def get_config_fields(cls):
-        return ['hashtag', 'app_id', 'app_secret',
-                'app_callback_url']
+        return ['hashtag', 'app_id', 'app_secret']
 
     def subscribe(self):
         api = InstagramAPI(
@@ -25,13 +25,14 @@ class Provider(BaseProvider):
             object='tag',
             object_id=self.subscription.config['hashtag'],
             aspect='media',
-            callback_url='{callback_url}{verify_url}'.format(**{
-                'callback_url': self.subscription.config['app_callback_url'],
-                'verify_url': reverse(
+            callback_url = 'http://{}{}'.format(
+                Site.objects.get_current().domain,
+                reverse(
                     'instagram_verify_subscription',
                     kwargs={'subscription_pk': self.subscription.pk}
                 )
-            }))
+            )
+        )
         self.subscription.subscription_id = result['data']['id']
         self.subscription.save()
 

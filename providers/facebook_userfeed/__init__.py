@@ -3,7 +3,6 @@ import calendar
 
 from datetime import datetime, timedelta
 
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 from facepy import GraphAPI

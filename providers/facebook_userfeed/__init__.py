@@ -33,6 +33,7 @@ class Provider(BaseProvider):
         '''
         return None
 
+    # TODO: Implement paging
     def pull_posts(self):
         '''
         Pull posts from the users feed. At the moment the following post types
@@ -54,8 +55,6 @@ class Provider(BaseProvider):
             since = calendar.timegm(since.timetuple())
         feed = api.get('me/posts', since=since)
 
-        for feed_item in feed['data']:
-            print feed_item['id']
         for feed_item in feed['data']:
             # Skip unsupported types
             if feed_item.get('status_type') not in ['mobile_status_update',
@@ -85,7 +84,6 @@ class Provider(BaseProvider):
                 })
 
             if feed_item['type'] == 'photo':
-                print json.dumps(feed_item, indent=2)
                 try:
                     photo = api.get(feed_item['object_id'])
                     post.data.update({
@@ -97,6 +95,7 @@ class Provider(BaseProvider):
                     })
                 except:
                     pass
+
             post.save()
 
         self.subscription.config['last_pull'] = now

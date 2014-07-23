@@ -24,7 +24,7 @@ class Command(BaseCommand):
             api = GraphAPI(access_token)
             result = api.get('/debug_token?input_token={}'.format(input_token))
 
-            print '''
+            self.stdout.write('''
             Subscription: {subscription}
             Facebook App: {app} ({app_id})
             Token expires: {expires}
@@ -38,4 +38,4 @@ class Command(BaseCommand):
                 'expires': datetime.fromtimestamp(
                     result['data']['expires_at']),
                 'error': result['data'].get('error', {}).get('message')
-            })
+            }))

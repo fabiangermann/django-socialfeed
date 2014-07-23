@@ -17,51 +17,44 @@ class Provider(BaseProvider):
     def get_config_fields(self):
         return ['app_id', 'app_secret']
 
-    def __init__(self, subscription, *args, **kwargs):
-        self.subscription = subscription
-        super(BaseProvider, self).__init__(*args, **kwargs)
-
     def subscribe(self):
-        app_id = self.subscription.config['app_id']
-        app_secret = self.subscription.config['app_secret']
-
-        access_token = '{app_id}|{app_secret}'.format(**{
-            'app_id': app_id,
-            'app_secret': app_secret
-        })
-        api = GraphAPI(access_token)
-
-        callback_url = 'http://{}{}'.format(
-            Site.objects.get_current().domain,
-            reverse('socialfeed_facebook_push'))
-        response = api.post(
-            '{0}/subscriptions'.format(app_id,),
-            object='user',
-            callback_url=callback_url,
-            fields='feed',
-            verify_token=self.subscription.id
-        )
+        '''
+        Real time updates (https://developers.facebook.com/docs/
+        graph-api/real-time-updates/v2.0) not implemented.
+        '''
+        return None
 
     def unsubscribe(self):
-        raise NotImplementedError
+        '''
+        Real time updates (https://developers.facebook.com/docs/
+        graph-api/real-time-updates/v2.0) not implemented.
+        '''
+        return None
 
     def pull_posts(self):
+        '''
+        Pull posts from the users feed. At the moment only posts with
+        status_type 'mobile_status_update' or 'added_photos' are
+        supported
+        '''
         from socialfeed.models import Post
         api = GraphAPI(self.subscription.config['access_token'])
 
         feed = api.get('me/posts')
         for feed_item in feed['data']:
+            # Skip unsupported types
             if feed_item.get('status_type') not in ['mobile_status_update',
                                                     'added_photos']:
                 continue
 
+            # Skip if post already exists
             post, created = Post.objects.get_or_create(
                 subscription=self.subscription,
                 source_id=feed_item.get('id'))
-
             if not created:
                 continue
 
+            # Get post data
             post.data = {
                 'created_time': str(feed_item.get('created_time')),
                 'type': feed_item.get('type'),
@@ -88,7 +81,6 @@ class Provider(BaseProvider):
                     })
                 except:
                     pass
-
             post.save()
 
     def get_post_thumbnail(self, post):

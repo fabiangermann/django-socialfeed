@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, FormView
 from django.views.generic.detail import SingleObjectMixin
+from django.shortcuts import render_to_response
 
 from socialfeed.models import Subscription
 from facepy import GraphAPI
@@ -22,23 +23,24 @@ class RequestAccessTokenView(FormView):
         app_id = subscription.config['app_id']
         redirect_uri = 'http://{}{}'.format(
             Site.objects.get_current().domain,
-            reverse('facebook_authorize_access_token', kwargs={
+            reverse('facebook_redeem_access_token', kwargs={
                 'pk': subscription.pk
             }))
 
         params = urllib.urlencode({
             'client_id': app_id,
             'redirect_uri': redirect_uri,
-            'scope': 'read_stream,user_photos'
+            'scope': 'read_stream,user_photos,user_status'
         })
         url = 'http://www.facebook.com/dialog/oauth?{}'.format(params)
 
         return HttpResponseRedirect(url)
 
 
-class AuthorizeAccessTokenView(SingleObjectMixin, View):
+class RedeemAccessTokenView(SingleObjectMixin, View):
     model = Subscription
 
+    # TODO: Implement Error handling (what if user aborted?)
     def get(self, request, *args, **kwargs):
         code = request.GET.get('code')
 
@@ -46,7 +48,7 @@ class AuthorizeAccessTokenView(SingleObjectMixin, View):
 
         redirect_uri = 'http://{}{}'.format(
             Site.objects.get_current().domain,
-            reverse('facebook_authorize_access_token', kwargs={
+            reverse('facebook_redeem_access_token', kwargs={
                 'pk': subscription.pk
             }))
 
@@ -64,14 +66,6 @@ class AuthorizeAccessTokenView(SingleObjectMixin, View):
         subscription.config['access_token_expiration_date'] = data['expires'][0]
         subscription.save()
 
-        return HttpResponse('worked')
-
-
-class FacebookPushView(View):
-    def get(self, request, *args, **kwargs):
-        return HttpResponse(request.GET.get('hub.challenge'))
-
-    def post(self, request, *args, **kwargs):
-        print '---'
-        print request.body
-        print '==='
+        return render_to_response(
+            'socialfeed/facebook/oauth2_success.html',
+            {'subscription': subscription})

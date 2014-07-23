@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ...models import Subscription
+from socialfeed.models import Subscription
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):

@@ -1,4 +1,7 @@
 import json
+import calendar
+
+from datetime import datetime, timedelta
 
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -33,14 +36,27 @@ class Provider(BaseProvider):
 
     def pull_posts(self):
         '''
-        Pull posts from the users feed. At the moment only posts with
-        status_type 'mobile_status_update' or 'added_photos' are
-        supported
+        Pull posts from the users feed. At the moment the following post types
+        are supportd:
+            - normal status updates (type: status, status_type:
+                mobile_status_update)
+            - posting of single images (type: photo, status_type:
+                added_photos)
+            - posting of multiple images
         '''
         from socialfeed.models import Post
         api = GraphAPI(self.subscription.config['access_token'])
 
-        feed = api.get('me/posts')
+        now = calendar.timegm(datetime.utcnow().timetuple())
+        try:
+            since = self.subscription.config['last_pull']
+        except KeyError:
+            since = datetime.utcnow() - timedelta(days=30)
+            since = calendar.timegm(since.timetuple())
+        feed = api.get('me/posts', since=since)
+
+        for feed_item in feed['data']:
+            print feed_item['id']
         for feed_item in feed['data']:
             # Skip unsupported types
             if feed_item.get('status_type') not in ['mobile_status_update',
@@ -70,6 +86,7 @@ class Provider(BaseProvider):
                 })
 
             if feed_item['type'] == 'photo':
+                print json.dumps(feed_item, indent=2)
                 try:
                     photo = api.get(feed_item['object_id'])
                     post.data.update({
@@ -82,6 +99,9 @@ class Provider(BaseProvider):
                 except:
                     pass
             post.save()
+
+        self.subscription.config['last_pull'] = now
+        self.subscription.save()
 
     def get_post_thumbnail(self, post):
         return post.data.get('images', {}).get('thumbnail')

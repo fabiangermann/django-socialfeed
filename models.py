@@ -41,13 +41,13 @@ class Subscription(models.Model):
 
 
 def subscribe(sender, instance, **kwargs):
-    if instance.is_active and not 'subscription_id' in instance.config:
+    if instance.is_active and not instance.subscription_id:
         provider = instance.get_provider()
         provider.subscribe()
 
 
 def unsubscribe(sender, instance, **kwargs):
-    if not instance.is_active and 'subscription_id' in instance.config:
+    if not instance.is_active and instance.subscription_id:
         provider = instance.get_provider()
         provider.unsubscribe()
 

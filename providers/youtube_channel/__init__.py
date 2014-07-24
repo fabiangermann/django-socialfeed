@@ -66,4 +66,4 @@ class Provider(BaseProvider):
         return post.data['thumbnails']['default']['url']
 
     def get_post_title(self, post):
-        return post.data['title'
+        return post.data['title']

@@ -34,6 +34,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['admin_thumbnail', 'admin_title', 'provider']
+    list_filter = ['subscription']
 
     def provider(self, instance):
         return instance.subscription.provider

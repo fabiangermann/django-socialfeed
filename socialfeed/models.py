@@ -1,3 +1,4 @@
+from datetime import datetime
 from importlib import import_module
 
 from django.conf import settings
@@ -59,6 +60,7 @@ class Post(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     subscription = models.ForeignKey(Subscription)
     source_id = models.CharField(_('source id'), max_length=100)
+    created_at = models.DateTimeField(_('crated at'), default=datetime.now)
     data = JSONField('data')
 
     class Meta:

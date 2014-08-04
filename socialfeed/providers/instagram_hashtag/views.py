@@ -30,6 +30,7 @@ class InstagramPush(View):
             print exc_type, exc_value
         return HttpResponse('ok')
 
+
 def processInstagramUpdate(update):
     subscription_id = update.get('subscription_id')
     subscription = Subscription.objects.filter(
@@ -48,7 +49,8 @@ def processInstagramUpdate(update):
     for image in media:
         post, created = Post.objects.get_or_create(
             subscription=subscription,
-            source_id=image.id
+            source_id=image.id,
+            created_at=image.created_time
         )
 
         if not created:
@@ -85,6 +87,7 @@ def processInstagramUpdate(update):
                 }
 
         post.save()
+
 
 reactor.register_callback(subscriptions.SubscriptionType.USER,
                           processInstagramUpdate)

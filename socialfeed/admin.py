@@ -33,7 +33,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['admin_thumbnail', 'admin_title', 'provider']
+    list_display = ['admin_thumbnail', 'admin_title', 'created_at', 'provider']
     list_filter = ['subscription']
 
     def provider(self, instance):

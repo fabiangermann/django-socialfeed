@@ -63,7 +63,7 @@ class Provider(BaseProvider):
             self.fetch_uploads(playlist_id, uploads['nextPageToken'])
 
     def get_post_thumbnail(self, post):
-        return post.data['thumbnails']['default']['url']
+        return post.data.get('thumbnails', {}).get('default', {}).get('url')
 
     def get_post_title(self, post):
-        return post.data['title']
+        return post.data.get('title')

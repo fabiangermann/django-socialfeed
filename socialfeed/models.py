@@ -56,6 +56,11 @@ post_save.connect(subscribe, sender=Subscription)
 pre_delete.connect(unsubscribe, sender=Subscription)
 
 
+class PostManager(models.Manager):
+    def active(self):
+        return self.get_query_set().filter(is_active=True)
+
+
 class Post(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     subscription = models.ForeignKey(Subscription)
@@ -63,7 +68,10 @@ class Post(models.Model):
     created_at = models.DateTimeField(_('crated at'), default=datetime.now)
     data = JSONField('data')
 
+    objects = PostManager()
+
     class Meta:
         unique_together = ('subscription', 'source_id')
         verbose_name = _('post')
         verbose_name_plural = _('posts')
+        ordering = ['-created_at']

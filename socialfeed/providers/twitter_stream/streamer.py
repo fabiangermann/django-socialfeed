@@ -1,7 +1,6 @@
 import json
 import pytz
 
-from time import strptime
 from datetime import datetime
 
 from twython import TwythonStreamer

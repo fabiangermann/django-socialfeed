@@ -4,6 +4,7 @@ from instagram.client import InstagramAPI
 
 from socialfeed.models import Subscription
 
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         subscriptions = Subscription.objects.filter(provider__in=[
@@ -14,7 +15,6 @@ class Command(BaseCommand):
         for subscription in subscriptions:
             app_id = subscription.config.get('app_id')
             app_secret = subscription.config.get('app_secret')
-
 
             if app_id and app_secret and app_id not in processed_apps:
                 api = InstagramAPI(

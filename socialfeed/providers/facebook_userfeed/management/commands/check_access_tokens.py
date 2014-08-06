@@ -5,6 +5,7 @@ from facepy import GraphAPI
 
 from socialfeed.models import Subscription
 
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         subscriptions = Subscription.objects.filter(
@@ -15,7 +16,6 @@ class Command(BaseCommand):
                                                               'app_secret',
                                                               'access_token']):
                 continue
-
 
             access_token = '|'.join([subscription.config['app_id'],
                                      subscription.config['app_secret']])

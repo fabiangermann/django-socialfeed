@@ -43,7 +43,8 @@ class SubscriptionAdminForm(forms.ModelForm):
         super(SubscriptionAdminForm, self).clean()
         if self.instance.pk:
             provider = self.instance.get_provider()
-            for idx, config_var_name in enumerate(provider.get_config_fields()):
+            config_fields = provider.get_config_fields()
+            for idx, config_var_name in enumerate(config_fields):
                 field_name = 'config_var_{}'.format(idx)
                 value = self.cleaned_data.get(field_name)
                 self.instance.config[config_var_name] = value

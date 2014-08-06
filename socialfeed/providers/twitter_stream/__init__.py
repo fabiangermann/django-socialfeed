@@ -1,6 +1,3 @@
-import pytz
-from datetime import datetime
-
 from django.utils.translation import ugettext_lazy as _
 
 from socialfeed.providers import BaseProvider

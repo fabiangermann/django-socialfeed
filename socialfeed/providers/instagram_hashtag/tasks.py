@@ -1,7 +1,7 @@
 import pytz
 
 from celery import shared_task
-from instagram import InstagramAPI, subscriptions
+from instagram import InstagramAPI
 
 from socialfeed.models import Subscription, Post
 
@@ -26,7 +26,7 @@ def process_instagram_update(update):
         post, created = Post.objects.get_or_create(
             subscription=subscription,
             source_id=image.id,
-            created_at=image.created_time.replace(tzinfo=tz_ch)
+            created_at=image.created_time.replace(tzinfo=pytz.utc)
         )
 
         if not created:
@@ -36,7 +36,7 @@ def process_instagram_update(update):
             'filter': image.filter,
             'link': image.link,
             'type': image.type,
-            'tags': [tag.name for tag in image.tags],
+            'tags': [t.name for t in image.tags],
             'user': {
                 'id': image.user.id,
                 'username': image.user.username,

@@ -1,5 +1,4 @@
 from django.conf.urls import url, patterns
-from django.views.decorators.csrf import csrf_exempt
 
 from .views import RequestAccessTokenView, RedeemAccessTokenView
 

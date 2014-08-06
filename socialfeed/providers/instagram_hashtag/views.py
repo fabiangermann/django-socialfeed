@@ -1,19 +1,19 @@
-import json
 import sys
 import logging
 
 from django.http import HttpResponse
 from django.views.generic import View
 
-from instagram import InstagramAPI, subscriptions
+from instagram import subscriptions
 
-from socialfeed.models import Subscription, Post
+from socialfeed.models import Subscription
 
 from .tasks import process_instagram_update
 
 reactor = subscriptions.SubscriptionsReactor()
 
 logger = logging.getLogger(__name__)
+
 
 class InstagramPush(View):
     def get(self, request, subscription_pk, **kwargs):
@@ -33,7 +33,9 @@ class InstagramPush(View):
         try:
             subscription = Subscription.objects.get(pk=subscription_pk)
             reactor.process(
-                subscription.config['app_secret'], raw_response, x_hub_signature)
+                subscription.config['app_secret'],
+                raw_response,
+                x_hub_signature)
         except Exception:
             print 'Got error in reactor processing: %s' % raw_response
             exc_type, exc_value, exc_traceback = sys.exc_info()

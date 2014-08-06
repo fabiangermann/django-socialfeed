@@ -25,7 +25,7 @@ class Provider(BaseProvider):
             object='tag',
             object_id=self.subscription.config['hashtag'],
             aspect='media',
-            callback_url = 'http://{}{}'.format(
+            callback_url='http://{}{}'.format(
                 Site.objects.get_current().domain,
                 reverse(
                     'instagram_verify_subscription',
@@ -40,8 +40,7 @@ class Provider(BaseProvider):
             client_id=self.subscription.config['app_id'],
             client_secret=self.subscription.config['app_secret'])
 
-        result = api.delete_subscriptions(
-            id=self.subscription.subscription_id)
+        api.delete_subscriptions(id=self.subscription.subscription_id)
 
         self.subscription.subscription_id = None
 

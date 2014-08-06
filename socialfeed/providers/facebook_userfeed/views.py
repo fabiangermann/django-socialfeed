@@ -3,7 +3,7 @@ from urlparse import parse_qs
 
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.views.generic import View, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.shortcuts import render_to_response
@@ -63,7 +63,8 @@ class RedeemAccessTokenView(SingleObjectMixin, View):
         data = parse_qs(response)
 
         subscription.config['access_token'] = data['access_token'][0]
-        subscription.config['access_token_expiration_date'] = data['expires'][0]
+        exp_date = data['expires'][0]
+        subscription.config['access_token_expiration_date'] = exp_date
         subscription.save()
 
         return render_to_response(

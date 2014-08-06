@@ -9,4 +9,3 @@ urlpatterns = patterns(
         csrf_exempt(InstagramPush.as_view()),
         name='instagram_verify_subscription'),
 )
-

@@ -1,9 +1,6 @@
-import json
 import calendar
 
 from datetime import datetime, timedelta
-
-from django.core.urlresolvers import reverse
 
 from facepy import GraphAPI
 

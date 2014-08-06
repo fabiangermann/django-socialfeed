@@ -1,4 +1,3 @@
-import json
 import pytz
 
 from datetime import datetime
@@ -6,7 +5,6 @@ from datetime import datetime
 from twython import TwythonStreamer
 
 from socialfeed.models import Post
-from socialfeed.providers import BaseProvider
 
 
 class Streamer(TwythonStreamer):
@@ -37,5 +35,5 @@ class Streamer(TwythonStreamer):
         post.save()
 
     def on_error(self, status_code, data):
-        #print 'ERROR', status_code, data
+        # print 'ERROR', status_code, data
         pass

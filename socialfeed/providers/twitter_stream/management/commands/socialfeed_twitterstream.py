@@ -4,6 +4,7 @@ from socialfeed.providers.twitter_stream.streamer import Streamer
 
 from socialfeed.models import Subscription
 
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         try:

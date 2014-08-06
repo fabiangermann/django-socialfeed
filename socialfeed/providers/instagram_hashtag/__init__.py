@@ -34,7 +34,6 @@ class Provider(BaseProvider):
             )
         )
         self.subscription.subscription_id = result['data']['id']
-        self.subscription.save()
 
     def unsubscribe(self):
         api = InstagramAPI(
@@ -43,6 +42,8 @@ class Provider(BaseProvider):
 
         result = api.delete_subscriptions(
             id=self.subscription.subscription_id)
+
+        self.subscription.subscription_id = None
 
     def pull_posts(self):
         return None

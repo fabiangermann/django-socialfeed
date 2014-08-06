@@ -29,8 +29,31 @@ class Subscription(models.Model):
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
 
+    def __init__(self, *args, **kwargs):
+        """
+        Save the initial value of the is_active class for later use in the
+        save method.
+        """
+        super(Subscription, self).__init__(*args, **kwargs)
+
+        self.__initial_active_state = self.is_active
+
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        Check if the is_active flag has changed and if so trigger the
+        (un)subscribe methods on the provider.
+        """
+        if not self.__initial_active_state == self.is_active:
+            if self.is_active:
+                self.get_provider().subscribe()
+            else:
+                self.get_provider().unsubscribe()
+
+        super(Subscription, self).save(*args, **kwargs)
+        self.__initial_active_state = self.is_active
 
     @property
     def provider_class(self):
@@ -41,18 +64,9 @@ class Subscription(models.Model):
         return self.provider_class(self)
 
 
-def subscribe(sender, instance, **kwargs):
-    if instance.is_active and not instance.subscription_id:
-        provider = instance.get_provider()
-        provider.subscribe()
-
-
 def unsubscribe(sender, instance, **kwargs):
-    if not instance.is_active and instance.subscription_id:
-        provider = instance.get_provider()
-        provider.unsubscribe()
+    instance.get_provider().unsubscribe()
 
-post_save.connect(subscribe, sender=Subscription)
 pre_delete.connect(unsubscribe, sender=Subscription)
 
 

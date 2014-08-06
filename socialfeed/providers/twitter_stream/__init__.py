@@ -23,7 +23,7 @@ class Provider(BaseProvider):
         return
 
     def get_post_thumbnail(self, post):
-        for media in post.data['entities'].get('media', []):
+        for media in post.data.get('entities', {}).get('media', []):
             if not media['type'] == 'photo':
                 continue
 

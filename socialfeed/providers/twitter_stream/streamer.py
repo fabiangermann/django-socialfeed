@@ -1,3 +1,9 @@
+import json
+import pytz
+
+from time import strptime
+from datetime import datetime
+
 from twython import TwythonStreamer
 
 from socialfeed.models import Post
@@ -21,10 +27,16 @@ class Streamer(TwythonStreamer):
         if not created:
             return
 
+        # Assign data returned from twitter
         post.data = data
+
+        # Dont bother with conversion of the creation date form data as its a
+        # livestream anyway.
+        ch = pytz.timezone('Europe/Zurich')
+        post.created_at = datetime.now(tz=ch)
+
         post.save()
 
     def on_error(self, status_code, data):
         #print 'ERROR', status_code, data
         pass
-

@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +15,11 @@ class Provider(BaseProvider):
 
     @classmethod
     def get_config_fields(cls):
-        return ['hashtag', 'app_id', 'app_secret']
+        return (
+            ['hashtag', forms.CharField, {'help_text': _('Without "#"')}],
+            ['app_id', forms.CharField],
+            ['app_secret', forms.CharField]
+        )
 
     def subscribe(self):
         api = InstagramAPI(

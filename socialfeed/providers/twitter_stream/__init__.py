@@ -1,3 +1,4 @@
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from socialfeed.providers import BaseProvider
@@ -10,8 +11,13 @@ class Provider(BaseProvider):
 
     @classmethod
     def get_config_fields(self):
-        return ['api_key', 'api_secret', 'access_token', 'access_token_secret',
-                'filter']
+        return (
+            ['api_key', forms.CharField],
+            ['api_secret', forms.CharField],
+            ['access_token', forms.CharField],
+            ['access_token_secret', forms.CharField],
+            ['filter', forms.CharField]
+        )
 
     def subscribe(self):
         return

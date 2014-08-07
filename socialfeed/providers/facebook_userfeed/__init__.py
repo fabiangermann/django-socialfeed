@@ -1,5 +1,4 @@
 import calendar
-
 from datetime import datetime, timedelta
 
 from facepy import GraphAPI
@@ -14,7 +13,13 @@ class Provider(BaseProvider):
 
     @classmethod
     def get_config_fields(self):
-        return ['app_id', 'app_secret']
+        # No idea why but if I put the import at the top it crashes ("'module'
+        # object has no attribute 'CharField'")
+        from django import forms
+        return (
+            ['app_id', forms.CharField],
+            ['app_secret', forms.CharField]
+        )
 
     def subscribe(self):
         '''

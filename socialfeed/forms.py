@@ -33,18 +33,27 @@ class SubscriptionAdminForm(forms.ModelForm):
                     self.fields.pop(field)
         else:
             config_fields = self.instance.provider_class.get_config_fields()
-            for idx, config_var_name in enumerate(config_fields):
-                field = self.fields['config_var_{}'.format(idx)]
-                field.label = config_var_name.replace('_', ' ')
-                field.required = True
-                field.initial = self.instance.config.get(config_var_name)
+            for idx, config_field in enumerate(config_fields):
+                try:
+                    field_label, field_class, field_options = config_field
+                except ValueError:
+                    field_label, field_class = config_field
+                    field_options = {}
+
+                if not 'label' in field_options:
+                    field_options['label'] = field_label.replace('_', ' ')
+
+                field_name = 'config_var_{}'.format(idx)
+                self.fields[field_name] = field_class(**field_options)
+                self.fields[field_name].initial = self.instance.config.get(
+                    field_label)
 
     def clean(self):
         super(SubscriptionAdminForm, self).clean()
         if self.instance.pk:
             provider = self.instance.get_provider()
             config_fields = provider.get_config_fields()
-            for idx, config_var_name in enumerate(config_fields):
+            for idx, config_field in enumerate(config_fields):
                 field_name = 'config_var_{}'.format(idx)
                 value = self.cleaned_data.get(field_name)
-                self.instance.config[config_var_name] = value
+                self.instance.config[config_field[0]] = value

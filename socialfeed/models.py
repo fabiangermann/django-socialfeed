@@ -78,7 +78,7 @@ class Post(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     subscription = models.ForeignKey(Subscription)
     source_id = models.CharField(_('source id'), max_length=100)
-    created_at = models.DateTimeField(_('crated at'), null=True)
+    created_at = models.DateTimeField(_('created at'), null=True)
     data = JSONField('data')
 
     objects = PostManager()

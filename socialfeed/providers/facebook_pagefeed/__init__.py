@@ -74,7 +74,7 @@ class Provider(BaseProvider):
             since = datetime.utcnow() - timedelta(days=30)
             since = calendar.timegm(since.timetuple())
 
-        feed = api.get('{}/feed'.format(self.subscription.config['page_id']))
+        feed = api.get('{}/feed'.format(self.subscription.config['page_id']), since=since)
 
         for feed_item in feed['data']:
             # Skip unsupported types

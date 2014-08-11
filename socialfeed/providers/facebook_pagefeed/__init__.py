@@ -80,9 +80,6 @@ class Provider(BaseProvider):
             # Skip unsupported types
             if feed_item.get('status_type') not in ['mobile_status_update',
                                                     'added_photos']:
-                print 'skipping'
-                print feed_item.get('status_type')
-                print feed_item
                 continue
 
             # Skip if post already exists

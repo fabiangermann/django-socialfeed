@@ -1,3 +1,6 @@
+import pytz
+from datetime import datetime
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -54,7 +57,9 @@ class Provider(BaseProvider):
         for upload in uploads['items']:
             post, created = Post.objects.get_or_create(
                 subscription=self.subscription,
-                source_id=upload['snippet']['resourceId']['videoId'])
+                source_id=upload['snippet']['resourceId']['videoId'],
+                created_at=upload['snippet']['publishedAt']
+	    )
             if not created:
                 continue
 

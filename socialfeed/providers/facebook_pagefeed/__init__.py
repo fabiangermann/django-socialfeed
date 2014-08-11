@@ -74,19 +74,22 @@ class Provider(BaseProvider):
             since = datetime.utcnow() - timedelta(days=30)
             since = calendar.timegm(since.timetuple())
 
-        feed = api.get('{}/feed'.format(self.subscription.config['page_id']),
-                       since=since)
+        feed = api.get('{}/feed'.format(self.subscription.config['page_id']))
 
         for feed_item in feed['data']:
             # Skip unsupported types
             if feed_item.get('status_type') not in ['mobile_status_update',
                                                     'added_photos']:
+                print 'skipping'
+                print feed_item.get('status_type')
+                print feed_item
                 continue
 
             # Skip if post already exists
             post, created = Post.objects.get_or_create(
                 subscription=self.subscription,
-                source_id=feed_item.get('id'))
+                source_id=feed_item.get('id'),
+                created_at=feed_item.get('created_time'))
             if not created:
                 continue
 

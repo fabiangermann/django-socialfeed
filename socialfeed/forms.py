@@ -29,7 +29,7 @@ class SubscriptionAdminForm(forms.ModelForm):
 
         if not self.instance.pk:
             for field in self.fields.copy():
-                if not field == 'provider':
+                if field not in ['title', 'provider']:
                     self.fields.pop(field)
         else:
             config_fields = self.instance.provider_class.get_config_fields()

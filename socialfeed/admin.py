@@ -12,7 +12,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
     def get_fields(self, request, obj=None):
         if not obj:
-            return ['provider']
+            return ['title', 'provider']
         else:
             return super(SubscriptionAdmin, self).get_fields(request, obj)
 

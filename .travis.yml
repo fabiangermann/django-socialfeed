@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO_VERSION=1.7
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install:
+    - pip install -q Django==$DJANGO_VERSION python-instagram==1.1.2 twython==3.1.2 google-api-python-client==1.2 --use-mirrors
+  - python setup.py -q install
+# command to run tests, e.g. python setup.py test
+script: "cd tests && ./manage.py test testapp"

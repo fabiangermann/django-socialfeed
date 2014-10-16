@@ -1,5 +1,14 @@
-*.py?
+*.pyc
 *~
-.*.sw*
-.DS_Store
+.*.swp
 \#*#
+/secrets.py
+.DS_Store
+._*
+/MANIFEST
+/_build
+/build
+/dist
+/django_socialfeed.egg-info
+/tests/venv
+.tox

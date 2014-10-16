@@ -11,7 +11,7 @@ setup(
     name='django-socialfeed',
     version='0.1',
     description='',
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     author='Fabian Germann',
     author_email='fg@feinheit.ch',
     url='http://github.com/fabiangermann/',

@@ -1,6 +1,6 @@
 include LICENSE
 include MANIFEST.in
-include README.rst
+include README.md
 recursive-include socialfeed/static *
 recursive-include socialfeed/locale *
 recursive-include socialfeed/templates *
